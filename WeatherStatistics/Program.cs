@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -7,22 +8,102 @@ namespace WeatherStatistics
 {
     class Program
     {
-        private static List<double> measurements = new List<double>();
+        private static readonly string helpMessage = "USAGE:\n" +
+            "statistics [<measurement1> <measurement2> ... <measurementN>]\n" +
+            "\n" +
+            "help\n" +
+            "exit\n" +
+            "\n" +
+            "Please refer to the README.md for a more detailed description of the applications usage.\n";
         
         static void Main(string[] args)
-        {          
-            // If no provited args from application launch, ask for them now.
+        {
+            Console.WriteLine("### WeatherStatistics ###\n\n(Enter 'help' for list of commands)");
+
+            // If no provited args from application launch, let user enter them now.
             if (args.Length == 0)
+                GetUserInput(out args);
+
+            // Keep program running until exit is entered.
+            while (args[0] != "exit")
             {
-                Console.WriteLine("Enter measurements:");
-                args = new Regex("[ ]{2,}", RegexOptions.None).Replace(Console.ReadLine(), " ").Split(' ');
+                if (args.Length > 0)
+                {
+                    // Compare user input arguments and perform actions hereafter.
+                    if (args[0] == "help")
+                    {
+                        PrintHelpMessage();
+                    }
+                    else if (args[0] == "statistics" && (RemoveItems(ref args).Length) > 0)
+                    {
+                        Statistics(args);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Unrecognizable input.");
+                    }
+                }
+
+                Console.WriteLine();
+                GetUserInput(out args);
+            }
+        }
+
+        /// <summary>
+        /// Wait for user to enter new arguments.
+        /// </summary>
+        /// <param name="args">String array to contain arguments.</param>
+        static private void GetUserInput(out string[] args)
+        {
+            args = new Regex("[ ]{2,}", RegexOptions.None).Replace(Console.ReadLine(), " ").Split(' ');
+        }
+
+        /// <summary>
+        /// Remove items from front of 'array'.
+        /// </summary>
+        /// <param name="remove">Number of items to remove.</param>
+        /// <returns>The modified array.</returns>
+        static private string[] RemoveItems(ref string[] array, int remove = 1)
+        {
+            array = array.Skip(remove).ToArray();
+
+            return array;
+        }        
+
+        /// <summary>
+        /// Print help message to the console.
+        /// </summary>
+        static private void PrintHelpMessage()
+        {
+            Console.WriteLine(helpMessage);
+        }
+
+        /// <summary>
+        /// Try to parse all values as double.
+        /// </summary>
+        /// <returns>List of all successfully parsed values.</returns>
+        static List<double> ParseAllAsDouble(string[] arr)
+        {
+            var values = new List<double>();
+            foreach (var str in arr)
+            {
+                if (Double.TryParse(str.Replace('.', ','), out double value))
+                    values.Add(value);
             }
 
-            // Try to convert each argument to double and add it to measurements list.
-            foreach (var arg in args)
+            return values;
+        }
+
+        /// <summary>
+        /// Calculate and print statistics for values in the measurements list.
+        /// </summary>
+        static void Statistics(string[] args)
+        {
+            var measurements = ParseAllAsDouble(args);
+            if (measurements.Count == 0)
             {
-                if (Double.TryParse(arg.Replace('.', ','), out double measurement))
-                    measurements.Add(measurement);
+                Console.WriteLine("No valid values given for measurements.");
+                return;
             }
 
             // Print added measurements.
