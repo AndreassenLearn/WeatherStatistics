@@ -8,13 +8,13 @@ namespace WeatherStatistics
 {
     class Program
     {
-        private static readonly string helpMessage = "USAGE:\n" +
-            "statistics [<measurement1> <measurement2> ... <measurementN>]\n" +
+        private static readonly string helpMsg = "USAGE:\n" +
+            "statistics <measurement1> <measurement2> ... <measurementN>\n" +
             "\n" +
             "help\n" +
             "exit\n" +
             "\n" +
-            "Please refer to the README.md for a more detailed description of the applications usage.\n";
+            "Please refer to the README.md for a more detailed description of the application's usage.\n";
         
         static void Main(string[] args)
         {
@@ -59,15 +59,16 @@ namespace WeatherStatistics
         }
 
         /// <summary>
-        /// Remove items from front of 'array'.
+        /// Remove items from front of 'arr'.
         /// </summary>
+        /// <param name="arr">Array to remove from.</param>
         /// <param name="remove">Number of items to remove.</param>
         /// <returns>The modified array.</returns>
-        static private string[] RemoveItems(ref string[] array, int remove = 1)
+        static private string[] RemoveItems(ref string[] arr, int remove = 1)
         {
-            array = array.Skip(remove).ToArray();
+            arr = arr.Skip(remove).ToArray();
 
-            return array;
+            return arr;
         }        
 
         /// <summary>
@@ -75,12 +76,13 @@ namespace WeatherStatistics
         /// </summary>
         static private void PrintHelpMessage()
         {
-            Console.WriteLine(helpMessage);
+            Console.WriteLine(helpMsg);
         }
 
         /// <summary>
         /// Try to parse all values as double.
         /// </summary>
+        /// <param name="arr">Array of strings to parse.</param>
         /// <returns>List of all successfully parsed values.</returns>
         static List<double> ParseAllAsDouble(string[] arr)
         {
@@ -95,7 +97,7 @@ namespace WeatherStatistics
         }
 
         /// <summary>
-        /// Calculate and print statistics for values in the measurements list.
+        /// Calculate and print statistics for values in 'args'.
         /// </summary>
         static void Statistics(string[] args)
         {
