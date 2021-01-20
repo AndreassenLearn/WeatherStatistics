@@ -37,3 +37,11 @@ Average: 15,675
 High: 23,6
 Low: 0,9
 ```
+
+### Versions
+#### v1.1.0
+* New code structure - ready for custom commands.
+* Added help message.
+
+#### v1.0.0
+* Initial version.
