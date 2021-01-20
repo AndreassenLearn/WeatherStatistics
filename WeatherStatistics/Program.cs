@@ -83,17 +83,19 @@ namespace WeatherStatistics
         /// Try to parse all values as double.
         /// </summary>
         /// <param name="arr">Array of strings to parse.</param>
-        /// <returns>List of all successfully parsed values.</returns>
-        static List<double> ParseAllAsDouble(string[] arr)
+        /// <param name="parsedValues">List of all successfully parsed values.</param>
+        /// <param name="notParsedValues">List of all unsuccessfully parsed values.</param>
+        static void ParseAllAsDouble(string[] arr, out List<double> parsedValues, out List<string> notParsedValues)
         {
-            var values = new List<double>();
+            parsedValues = new List<double>();
+            notParsedValues = new List<string>();
             foreach (var str in arr)
             {
                 if (Double.TryParse(str.Replace('.', ','), out double value))
-                    values.Add(value);
+                    parsedValues.Add(value);
+                else
+                    notParsedValues.Add(str);
             }
-
-            return values;
         }
 
         /// <summary>
@@ -101,7 +103,7 @@ namespace WeatherStatistics
         /// </summary>
         static void Statistics(string[] args)
         {
-            var measurements = ParseAllAsDouble(args);
+            ParseAllAsDouble(args, out var measurements, out var invalidArguments);
             if (measurements.Count == 0)
             {
                 Console.WriteLine("No valid values given for measurements.");
@@ -113,6 +115,16 @@ namespace WeatherStatistics
             foreach (var measurement in measurements)
             {
                 Console.WriteLine(measurement);
+            }
+
+            // Print invalid arguments if any.
+            if (invalidArguments.Count > 0)
+            {
+                Console.WriteLine("\nINVALID ARGUMENTS (IGNORED):");
+                foreach (var invalidArgument in invalidArguments)
+                {
+                    Console.WriteLine(invalidArgument);
+                }
             }
 
             // Print summary.
