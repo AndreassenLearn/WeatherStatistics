@@ -18,7 +18,7 @@ The collection of measurements can be given in the following ways:
 
 * A mixture of it all: `15 -18,4 16.89`
 
-If a value is invalid, it will be ignored and excluded from the calculations. *But don't ya' worry!* All the values processed by WeatherStatistics will be printed back in the console.
+If a value is invalid, it will be ignored and excluded from the calculations. *But don't ya' worry!* All the values processed by WeatherStatistics will be printed back in the console as well as those that were invalid.
 
 Values starting with either ',' or '.' will be treated as if they were starting with zero. Moreover this is also possible with negative values; `-,3` would translate into `-0,3`.
 
