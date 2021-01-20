@@ -8,8 +8,10 @@ namespace WeatherStatistics
 {
     class Program
     {
+        private static List<double> allMeasurements = new List<double>();
+
         private static readonly string helpMsg = "USAGE:\n" +
-            "statistics <measurement1> <measurement2> ... <measurementN>\n" +
+            "statistics [clear] [<measurement1> <measurement2> ... <measurementN>]\n" +
             "\n" +
             "help\n" +
             "exit\n" +
@@ -34,9 +36,17 @@ namespace WeatherStatistics
                     {
                         PrintHelpMessage();
                     }
-                    else if (args[0] == "statistics" && (RemoveItems(ref args).Length) > 0)
+                    else if (args[0] == "statistics")
                     {
-                        Statistics(args);
+                        if (RemoveFront(ref args).Length > 0 && args[0] == "clear")
+                        {
+                            ClearMeasurements();
+                            if (RemoveFront(ref args).Length > 0) Statistics(args);
+                        }
+                        else
+                        {
+                            Statistics(args);
+                        }
                     }
                     else
                     {
@@ -64,7 +74,7 @@ namespace WeatherStatistics
         /// <param name="arr">Array to remove from.</param>
         /// <param name="remove">Number of items to remove.</param>
         /// <returns>The modified array.</returns>
-        static private string[] RemoveItems(ref string[] arr, int remove = 1)
+        static private string[] RemoveFront(ref string[] arr, int remove = 1)
         {
             arr = arr.Skip(remove).ToArray();
 
@@ -103,22 +113,31 @@ namespace WeatherStatistics
         /// </summary>
         static void Statistics(string[] args)
         {
-            ParseAllAsDouble(args, out var measurements, out var invalidArguments);
-            if (measurements.Count == 0)
+            ParseAllAsDouble(args, out var addedMeasurements, out var invalidArguments);
+            AddMeasurements(addedMeasurements);
+
+            if (!allMeasurements.Any())
             {
-                Console.WriteLine("No valid values given for measurements.");
+                Console.WriteLine("No valid measurements to do statistics on.");
                 return;
             }
 
             // Print added measurements.
             Console.WriteLine("\nADDED MEASUREMENTS:");
-            foreach (var measurement in measurements)
+            if (addedMeasurements.Any())
             {
-                Console.WriteLine(measurement);
+                foreach (var measurement in addedMeasurements)
+                {
+                    Console.WriteLine(measurement);
+                }
+            }
+            else
+            {
+                Console.WriteLine("None.");
             }
 
             // Print invalid arguments if any.
-            if (invalidArguments.Count > 0)
+            if (invalidArguments.Any())
             {
                 Console.WriteLine("\nINVALID ARGUMENTS (IGNORED):");
                 foreach (var invalidArgument in invalidArguments)
@@ -129,9 +148,29 @@ namespace WeatherStatistics
 
             // Print summary.
             Console.WriteLine("\nSUMMARY:\n" +
-                "Average: " + Calculator.Average(measurements) + "\n" +
-                "High: " + Calculator.High(measurements) + "\n" +
-                "Low: " + Calculator.Low(measurements));
+                "Average: " + Calculator.Average(allMeasurements) + "\n" +
+                "High: " + Calculator.High(allMeasurements) + "\n" +
+                "Low: " + Calculator.Low(allMeasurements));
+        }
+
+        /// <summary>
+        /// Add measures to the preserved measurements.
+        /// </summary>
+        static void AddMeasurements(List<double> measurements)
+        {
+            foreach (var measurement in measurements)
+            {
+                allMeasurements.Add(measurement);
+            }
+        }
+
+        /// <summary>
+        /// Clear preserved measurements.
+        /// </summary>
+        static void ClearMeasurements()
+        {
+            allMeasurements.Clear();
+            Console.WriteLine("Measurements cleared.");
         }
     }
 }
