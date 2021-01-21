@@ -11,7 +11,7 @@ namespace WeatherStatistics
         private static List<double> allMeasurements = new List<double>();
 
         private static readonly string helpMsg = "USAGE:\n" +
-            "statistics [clear] [<measurement1> <measurement2> ... <measurementN>]\n" +
+            "statistics [add] <measurement1> <measurement2> ... <measurementN>\n" +
             "\n" +
             "help\n" +
             "exit\n" +
@@ -38,13 +38,13 @@ namespace WeatherStatistics
                     }
                     else if (args[0] == "statistics")
                     {
-                        if (RemoveFront(ref args).Length > 0 && args[0] == "clear")
+                        if (RemoveFront(ref args).Length > 0 && args[0] == "add")
                         {
-                            ClearMeasurements();
                             if (RemoveFront(ref args).Length > 0) Statistics(args);
                         }
                         else
                         {
+                            ClearMeasurements();
                             Statistics(args);
                         }
                     }
@@ -146,6 +146,21 @@ namespace WeatherStatistics
                 }
             }
 
+            // Print all measurements.
+            Console.WriteLine("\nMEASUREMENTS:");
+            if (allMeasurements.Any())
+            {
+                foreach (var measurement in allMeasurements)
+                {
+                    Console.WriteLine(measurement);
+                }
+            }
+            else
+            {
+                Console.WriteLine("None.");
+                return;
+            }
+
             // Print summary.
             Console.WriteLine("\nSUMMARY:\n" +
                 "Average: " + Calculator.Average(allMeasurements) + "\n" +
@@ -170,7 +185,6 @@ namespace WeatherStatistics
         static void ClearMeasurements()
         {
             allMeasurements.Clear();
-            Console.WriteLine("Measurements cleared.");
         }
     }
 }
