@@ -44,6 +44,12 @@ Low: 0,9
 ```
 
 ### Versions
+#### v1.2.1
+* Updated README.
+
+#### v1.2.0
+* Preserved measurements.
+
 #### v1.1.0
 * New code structure - ready for custom commands.
 * Added help message.
